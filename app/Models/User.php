@@ -13,6 +13,19 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    // Definimos las constantes para el rol
+    public const ROLE_ADMIN = 0;
+    public const ROLE_WAITER = 1;
+
+    public function getRoleName() : string
+    {
+        return match ($this->role) {
+            self::ROLE_ADMIN => 'Administrador',
+            self::ROLE_WAITER => 'Camarero',
+            default => 'Desconocido',
+        };
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -20,18 +33,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
+        'rol',
+        'active',
     ];
 
     /**
@@ -42,8 +45,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'role' => 'integer',
+            'active' => 'boolean',
         ];
     }
 }
